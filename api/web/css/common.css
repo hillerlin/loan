@@ -1,0 +1,38 @@
+.tips{
+  padding: 1rem 0 0;
+  background: #fff;
+}
+.tips .icon{
+  display: block;
+  width: 1.6rem;
+  margin: 0 auto .4rem;
+  height: 1.6rem;
+}
+.tips .icon.error{
+  background: url(http://cdn1.damailicai.com/loan/img/error.png) center center no-repeat;
+  background-size: 100%;
+}
+.tips h2{
+  color: #212121;
+  font-size: .34rem;
+  font-weight: normal;
+  height: .6rem;
+  line-height: .6rem;
+  text-align: center;
+}
+.tips .tips_btn{
+  padding: .88rem 0 .3rem;
+}
+.tips .tips_btn a{
+  display: block;
+  width: 4.2rem;
+  margin: 0 auto .3rem;
+  height: .88rem;
+  line-height: .88rem;
+  color: #fff;
+  font-size: .3rem;
+  text-align: center;
+  background: #FF9A26;
+  border: 1px #FF9A26 solid;
+  border-radius: .1rem;
+}

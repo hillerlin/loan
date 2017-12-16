@@ -1,0 +1,78 @@
+<?php
+use yii\helpers\Url;
+?>
+<title>借款平台</title>
+<?php echo $this->render('../layouts/borrowHeader.html');?>
+<body>
+	<div class="cont">
+		<div class="head">
+			<div class="head_bank"></div>
+			<h3>欢迎开通江西银行账户</h3>
+			<ul>
+				<li>
+					<p class="num">1</p>
+					<p>确定资料</p>
+					<span>&gt;</span>
+				</li>
+				<li>
+					<p class="num">2</p>
+					<p>设置交易密码</p>
+					<span>&gt;</span>
+				</li>
+				<li>
+					<p class="num">3</p>
+					<p>确认交易密码</p>
+				</li>
+			</ul>
+		</div>
+		<div class="content">
+			<p class="personal">个人信息</p>
+			<input type="hidden" name="dmId" value="<?=$dmId?>">
+			<input type="hidden" name="orderId" value="<?=$orderId?>">
+			<input type="hidden" name="token" value="<?=$token?>">
+			<div>
+				<div class="detail">
+					<span>姓名</span>
+					<input type="text" placeholder="请输入您的真实姓名" class="realName" />
+				</div >
+				<div class="detail">
+					<span>身份证</span>
+					<input type="text" placeholder="请输入您的身份证号码" class="idNo" />
+				</div>
+				<div class="detail">
+					<span>银行卡号</span>
+					<input type="text" placeholder="请输入您的还款银行卡号" class="cardNo" />
+				</div>
+			</div>
+		</div>
+		<div class="foot">
+			<div class="prompt"></div>
+			<p><span class="sure"></span>我已阅读并同意<a href="/bank/agreement" class="bank_color">《江西银行网络交易资金账户服务三方协议》</a><a class="bank_color" href="/bank/user_agreement">《用具授权协议》</a></p>
+			<div class="next">下一步</div>
+		</div>
+		<!--弹框-->
+		<div class="mask dn">
+			<div class="check">
+				<p class="message">已向您的手机<span></span>发送验证码，请查收并填入</p>
+				<div class="code">
+					<span class="test">验证码</span>
+					<input type="text" placeholder="请输入验证码" class="smscode"/>
+					<span class="code_status"></span>
+				</div>
+				<p class="prompt"></p>
+				<form action="/index/account-open" method="post">
+					<input type="hidden" name="dmId" value="<?=$dmId?>">
+					<input type="hidden" name="cardNo" />
+					<input type="hidden" name="smsCode" />
+					<input type="hidden" name="orderId" value="<?=$orderId?>">
+					<input type="hidden" name="retUrl" value="dmc" />
+					<input type="hidden" name="notifyUrl" value="dmc" />
+					<input type="submit" value="下一步" class="btn" />
+				</form>
+			</div>
+		</div>
+	</div>	
+</body>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/index/index.js"></script>
+</html>

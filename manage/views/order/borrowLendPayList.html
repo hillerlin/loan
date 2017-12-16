@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<?php echo $this->render('../layouts/commonHeader.html');?>
+<body>
+<form class="login form" action="/order/borrow-lend-pay-json" method="post">
+<div class="layui-form-item" style="padding:6px;">
+    <div class="layui-inline">
+        <label class="layui-form-mid">放款时间：</label>
+        <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="startTime" id="startTime" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-mid">至</label>
+        <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="endTime" id="endTime" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-mid">订单ID</label>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="orderId" id="orderId" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <button class="layui-btn" type="submit" function="query"><i class="layui-icon"></i>查询</button>
+        </div>
+    </div>
+</div>
+</form>
+<table class="layui-table" lay-data="{height: 'full', cellMinWidth: 80, url:'/order/borrow-lend-pay-json', page:true, id:'borrowLendPayList'}" lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+        <th lay-data="{field:'order_id', minWidth:100, sort: true, fixed: true,align:'center'}">订单ID</th>
+        <th lay-data="{field:'borrower_id', minWidth:100,align:'center'}">借款人ID</th>
+        <th lay-data="{field:'addtime', minWidth:200,align:'center'}">借款时间</th>
+        <th lay-data="{field:'amount', minWidth:150,align:'center'}">借款金额</th>
+        <th lay-data="{field:'unit',align:'center',minWidth:100,templet: '#unit'}">借款期限</th>
+        <th lay-data="{field:'repay_style', minWidth:150,templet: '#repay_style',align:'center'}">还款方式</th>
+        <th lay-data="{field:'accountId', minWidth: 200,align:'center'}">收款账号</th>
+        <th lay-data="{field:'lendpay_time', minWidth: 200,align:'center'}">放款时间</th>
+    </tr>
+    </thead>
+</table>
+<?php echo $this->render('../layouts/contentFoot.html');?>
+<script type="text/html" id="unit">
+    {{#
+         if(d.unit==1)
+         {
+            return d.duration+'月';
+         }else
+         {
+            return d.duration+'天';
+          }
+
+    }}
+</script>
+<script type="text/html" id="repay_style">
+    {{#
+    if(d.repay_style==1)
+    {
+    return '按月付息';
+    }else if(d.repay_style==2)
+    {
+    return '到期付息';
+    }else if(d.repay_style==3)
+    {
+     return '按季付息';
+    }else if(d.repay_style==4)
+    {
+    return '等额本息';
+    }
+
+    }}
+</script>
+
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    //表单提交模块
+    layui.use(['jquery', 'layer','form'], function () {
+        layui.$('form').submit(function () {
+            var table = layui.table;//表格
+            var self = layui.$(this);
+            var weburl=self.attr("action");
+            var startTime=$('input[name=startTime]').val();
+            var endTime=$('input[name=endTime]').val();
+            var filter=$('input[name=filter]').val();
+            var funcType=$('select[name=funcType]').val();
+            table.reload('borrowLendPayList', {
+                page: true,
+                method: 'post',
+                url:weburl,
+                where:{'startTime':startTime,'endTime':endTime,'funcType':funcType,'filter':filter},
+                response: {
+                    statusName: 'code' //数据状态的字段名称，默认：code
+                    ,statusCode: 0 //成功的状态码，默认：0
+                    ,msgName: 'msg' //状态信息的字段名称，默认：msg
+                    ,countType: "data.count" //数据总数的字段名称，默认：count
+                    ,dataType: "data.data" //数据列表的字段名称，默认：data
+                },
+                request: {
+                    pageName: 'page' //页码的参数名称，默认：page
+                    ,limitName: 'limit' //每页数据量的参数名，默认：limit
+                },
+                limits: [10,30,90,150,300]
+                ,limit: 10 //默认采用60
+
+            });
+/*            layui.$.post(self.attr("action"), self.serialize(), function (data) {
+            });*/
+            return false;
+        });
+    });
+    //时间控件模块
+    layui.use('laydate',function () {
+        var laydate=layui.laydate;
+        //注册时间组件
+        laydate.render({
+            elem:'#startTime'
+        });
+        laydate.render({
+            elem:'#endTime'
+        })
+    });
+    //表单模块
+    layui.use('table', function(){
+        var table = layui.table;
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function(obj){
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(demo)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.order_id + ' 的查看操作');
+            } else if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            }
+        });
+
+        var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('borrowerList')
+                    ,data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('borrowerList')
+                    ,data = checkStatus.data;
+                layer.msg('选中了：'+ data.length + ' 个');
+            }
+            ,isAll: function(){ //验证是否全选
+                var checkStatus = table.checkStatus('borrowerList');
+                layer.msg(checkStatus.isAll ? '全选': '未全选')
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
+</body>
+</html>

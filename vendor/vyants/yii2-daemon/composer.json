@@ -1,0 +1,23 @@
+{
+    "name": "vyants/yii2-daemon",
+    "description": "Extension provides functionality for simple daemons creation and control",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension", "daemon"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Vladimir Yants",
+            "email": "vladimir.yants@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "ext-pcntl": "*",
+        "ext-posix": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "vyants\\daemon\\": ""
+        }
+    }
+}

@@ -1,0 +1,9 @@
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond $1 !^(index\.php|images|robots\.txt)
+RewriteRule ^(.*)$ index.php/$1 [L]
+#RewriteCond %{HTTP_HOST} ^atrmoney.com [NC,OR]
+#RewriteCond %{HTTP_HOST} ^damailicai.com [NC,OR]
+#RewriteCond %{HTTP_HOST} ^www.atrmoney.com [NC]
+#RewriteRule ^(.*)$ http://www.damailicai.com/$1 [R=301,L]

@@ -1,0 +1,7 @@
+a.起因:由于线上xx_account表中的total字段有用户待收的利息金额，为以后债权转让等其他功能考虑，现重新使用base_total代表用户自身的总资产，base_total=可用余额+待收本金（待收本金包含投资中的冻结资金+已计息的待收本金）。
+b.操作
+1.先将用户可用余额更新到base_total，update xx_account set base_total=use_money
+2.将用户待收资金统计并加入到base_total,select a.user_id,base_total,use_money,SUM(repay_account) as wait_money from xx_account as a
+LEFT JOIN xx_borrow_collection as b on a.user_id=b.user_id
+where b.status=2 group by user_id
+调用pc端query/syn-account

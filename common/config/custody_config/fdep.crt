@@ -1,0 +1,71 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 3 (0x3)
+        Signature Algorithm: md5WithRSAEncryption
+        Issuer: emailAddress=certadmin@credit2go.cn, C=CN, O=Caizhong, Inc., OU=Infomation Security, OU=Class 3 Certification Authority G2, CN=Caizhong Trust Network
+        Validity
+            Not Before: Sep 18 05:55:37 2015 GMT
+            Not After : Sep 18 05:55:37 2019 GMT
+        Subject: C=CN, ST=SH, L=YP, O=credit2go.cn, OU=signature, CN=fdep/emailAddress=service@credit2go.cn
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (1024 bit)
+                Modulus (1024 bit):
+                    00:f2:dc:49:e9:c2:68:90:5e:de:48:dd:dc:7c:13:
+                    74:17:4c:56:d0:c0:07:37:1e:f0:f9:13:71:d3:7d:
+                    9b:fe:5f:0e:a1:89:06:56:0b:c9:c0:f8:9f:ea:48:
+                    62:33:c4:b8:c4:7f:d6:89:3a:46:87:47:3c:52:5a:
+                    81:84:9b:2d:b2:df:54:56:02:67:ea:7d:2d:9a:c3:
+                    29:de:84:e7:92:49:8c:ec:d2:f1:46:bc:b4:ea:92:
+                    7f:84:81:ba:ea:84:96:f5:5d:48:50:d6:36:76:a9:
+                    95:a2:d9:59:2f:2c:8c:5c:42:f4:5a:3b:08:44:23:
+                    ec:d0:5f:d9:cf:b1:87:e3:19
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Cert Type: 
+                Object Signing
+            X509v3 Key Usage: 
+                Digital Signature, Non Repudiation, Key Encipherment
+            X509v3 Subject Key Identifier: 
+                D0:DA:A7:51:8F:7D:C2:08:16:4C:0A:64:9A:06:08:95:E0:13:45:84
+            X509v3 Authority Key Identifier: 
+                keyid:1E:53:49:F5:96:4E:5F:1B:FE:FA:82:7A:CF:17:EE:02:4D:E2:89:01
+                DirName:/emailAddress=certadmin@credit2go.cn/C=CN/O=Caizhong, Inc./OU=Infomation Security/OU=Class 3 Certification Authority G2/CN=Caizhong Trust Network
+                serial:80:8F:E2:2B:D7:12:FD:24
+
+    Signature Algorithm: md5WithRSAEncryption
+        b1:ee:e1:98:81:8c:bc:70:ef:53:ef:fe:87:59:7f:a8:9b:b9:
+        78:83:94:6a:92:d5:26:25:27:ae:11:3c:5a:ac:e9:1e:c4:d9:
+        32:0b:c5:34:4f:35:38:69:14:98:bd:e6:c4:bb:35:82:03:36:
+        f2:fe:36:42:01:d1:19:d2:ad:84:e5:66:00:f2:db:79:ec:55:
+        56:a4:43:35:1c:82:f9:d2:b0:d8:b2:9c:53:90:37:01:4e:28:
+        78:14:9d:bc:04:41:54:fb:2a:0d:f9:dc:7d:75:f0:32:8a:87:
+        d1:c0:b6:c3:02:05:74:f4:c1:fb:7c:d7:0e:e5:4b:7e:8f:72:
+        b9:96
+-----BEGIN CERTIFICATE-----
+MIID+DCCA2GgAwIBAgIBAzANBgkqhkiG9w0BAQQFADCBuTElMCMGCSqGSIb3DQEJ
+ARYWY2VydGFkbWluQGNyZWRpdDJnby5jbjELMAkGA1UEBhMCQ04xFzAVBgNVBAoT
+DkNhaXpob25nLCBJbmMuMRwwGgYDVQQLExNJbmZvbWF0aW9uIFNlY3VyaXR5MSsw
+KQYDVQQLEyJDbGFzcyAzIENlcnRpZmljYXRpb24gQXV0aG9yaXR5IEcyMR8wHQYD
+VQQDExZDYWl6aG9uZyBUcnVzdCBOZXR3b3JrMB4XDTE1MDkxODA1NTUzN1oXDTE5
+MDkxODA1NTUzN1owgYYxCzAJBgNVBAYTAkNOMQswCQYDVQQIEwJTSDELMAkGA1UE
+BxMCWVAxFTATBgNVBAoTDGNyZWRpdDJnby5jbjESMBAGA1UECxMJc2lnbmF0dXJl
+MQ0wCwYDVQQDEwRmZGVwMSMwIQYJKoZIhvcNAQkBFhRzZXJ2aWNlQGNyZWRpdDJn
+by5jbjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA8txJ6cJokF7eSN3cfBN0
+F0xW0MAHNx7w+RNx032b/l8OoYkGVgvJwPif6khiM8S4xH/WiTpGh0c8UlqBhJst
+st9UVgJn6n0tmsMp3oTnkkmM7NLxRry06pJ/hIG66oSW9V1IUNY2dqmVotlZLyyM
+XEL0WjsIRCPs0F/Zz7GH4xkCAwEAAaOCAT8wggE7MAkGA1UdEwQCMAAwEQYJYIZI
+AYb4QgEBBAQDAgQQMAsGA1UdDwQEAwIF4DAdBgNVHQ4EFgQU0NqnUY99wggWTApk
+mgYIleATRYQwge4GA1UdIwSB5jCB44AUHlNJ9ZZOXxv++oJ6zxfuAk3iiQGhgb+k
+gbwwgbkxJTAjBgkqhkiG9w0BCQEWFmNlcnRhZG1pbkBjcmVkaXQyZ28uY24xCzAJ
+BgNVBAYTAkNOMRcwFQYDVQQKEw5DYWl6aG9uZywgSW5jLjEcMBoGA1UECxMTSW5m
+b21hdGlvbiBTZWN1cml0eTErMCkGA1UECxMiQ2xhc3MgMyBDZXJ0aWZpY2F0aW9u
+IEF1dGhvcml0eSBHMjEfMB0GA1UEAxMWQ2FpemhvbmcgVHJ1c3QgTmV0d29ya4IJ
+AICP4ivXEv0kMA0GCSqGSIb3DQEBBAUAA4GBALHu4ZiBjLxw71Pv/odZf6ibuXiD
+lGqS1SYlJ64RPFqs6R7E2TILxTRPNThpFJi95sS7NYIDNvL+NkIB0RnSrYTlZgDy
+23nsVVakQzUcgvnSsNiynFOQNwFOKHgUnbwEQVT7Kg353H118DKKh9HAtsMCBXT0
+wft81w7lS36PcrmW
+-----END CERTIFICATE-----

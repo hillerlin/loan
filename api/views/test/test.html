@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>接口测试</title>
+    </head>
+    <style>
+        .desc {
+            width:220px;
+        }
+        .butt {
+            height: 40px; width: 100px; font-size: large;
+        }
+        .detail {
+            padding: 3px 5px;
+            margin: 5px;
+        }
+        td {
+            border: #dcdcdc solid 1px;
+        }
+    </style>
+    <body >
+        <form method="post" id="req">
+            <table class="table" >
+                <thead>
+                    <td align="center" class="desc"><lable>接口名称|service</lable></td>
+                    <td>
+                        <select class="detail" name="service" id="service"  style="width:350px">
+                            <option value="">请选择</option>
+                            <option value="register">个人注册(API)|register</option>
+                            <option value="accountOpen">开通银行存管&去设置交易密码(FORM)|accountOpen</option>
+                            <option value="smsCodeApply">请求发送短信验证码(API)|smsCodeApply</option>
+                            <option value="collectUserInfo">借款人信息完善(API)|collectUserInfo</option>
+                            <option value="borrow">借款人发起借款（API）|borrow</option>
+                            <option value="trusteePay">借款人确认受托支付（Form）trusteePay</option>
+                            <option value="debtDetailsQuery">借款人订单状态（API）debtDetailsQuery</option>
+                            <option value="debtRepayListQuery">借款人还款计划表（API）debtRepayListQuery</option>
+                            <option value="contract">订单合同链接（API）contract</option>
+                            <option value="getCreditReport">获取征信详情（API）getCreditReport</option>
+                        </select>
+                    </td>
+                    <td class="remark"><span></span></td>
+                </thead>
+                <tbody id="form">
+
+                </tbody>
+            </table>
+            <br>
+            <div id="subForm"></div>
+        </form>
+        <div id="subApi"></div><br>
+        <br>
+        <br>
+        <textarea id="RawJson" cols="60" rows="15" readonly="readonly"></textarea>
+    </body>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script>
+        $('#service').change(function () {
+            var service = $('#service').val();
+            $.ajax({
+                url: '/test/array',
+                type: 'post',
+                dataType: 'json',
+                data: {service: service},
+                success: function (data) {
+                    var htmlSubmit = '';
+                    if (data.url!=='') {
+                        $("#req").attr({"action" : data.url, "target":"_blank"});
+                        htmlSubmit = '<input type="submit" class="butt" value="表单提交" />'
+                        $('#subForm').html(htmlSubmit);
+                        $('#subApi').html('');
+                    }else{
+                        $("#req").attr({"action" : '', "target":""});
+                        htmlSubmit = '<input type="button" onclick="subForm()" value="api提交" class="butt">'
+                        $('#subForm').html('');
+                        $('#subApi').html(htmlSubmit);
+                    }
+                    addHtml(data.param);
+                }
+            });
+        });
+        function addHtml(data) {
+            var html = '';
+            for (var i=0; i<data.length; i++){
+                html = html + '<tr><td align="center" class="desc"><lable>'+data[i]['desc'] + '</lable></td><td><input class="detail" type="text" size="30" value="' + data[i]['value'] + '" name="' + data[i]['name'] + '"></td><td class="remark"><span>'+data[i]['remark'] + '</span></td>'
+            }
+            $('#form').html(html);
+        }
+        function subForm() {
+            var formData = $('#req').serialize();
+            console.log(formData);
+            $.ajax({
+                url:"/loan/index",
+                type: "post",
+                dataType: 'json',
+                data: formData,
+                success: function(data) {
+                    $("#RawJson").text(JSON.stringify(data, null, "\t"));
+                    return false;
+                }
+            });
+
+        }
+
+    </script>
+</html>

@@ -1,0 +1,310 @@
+<?php 
+use yii\helpers\Url;
+?>
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>大麦理财</title>
+	<meta name="keywords" content="<?php echo $info['seo-other-keywords']?>">
+	<meta name="description" content="用户中心 - <?php echo $info['webtitle']?>">
+	<?php echo $this->render('@pc/views/layouts/public.html', $info);?>
+	<link type="text/css" rel="stylesheet" href="<?php echo url::to('@css');?>/home/resultpage.css">
+</head>
+
+<body>
+	<?php echo $this->render('@pc/views/layouts/header.html', $info);?>
+	<section id="questionPage">
+		<!--提现结果 start-->
+		<div class="withdraw-success dn">
+			<div class="top-title">
+				<h3><i class="success"></i>您的提现申请已提交成功!</h3>
+				<p>预计1个工作日内将到达银行卡（节假日顺延）</p>
+			</div>
+			<div class="balanceInfo">
+				<ul>
+					<li class="clear">
+						<p class="fl">提现金额：</p><span class="num1 fr">￥<i class="js-operate">0</i></span></li>
+					<li class="clear">
+						<p class="fl">当前可用余额：</p><span class="fr">￥<i class="js-canuse">0</i></span></li>
+				</ul>
+			</div>
+			<div class="skipLink clear">
+				<a class="fl" href="/home/index">返回账户中心</a><a class="fr" href="/home/recharge#withdraw_record">查看提现记录</a>
+			</div>
+			<div class="page-wrap dn">
+				<h3>提现原因问卷</h3>
+				<p class="p1">亲爱的麦粉，借用少许时间，说说您提现的原因</p>
+				<div class="page-upinfo">
+					<ul>
+						<li><input name="a" id="select1" type="checkbox"><label for="select1">急需用钱</label></li>
+						<li><input name="b" id="select2" type="checkbox"><label for="select2">收益有点低</label></li>
+						<li><input name="c" id="select3" type="checkbox"><label for="select3">项目期限长</label></li>
+						<li><input name="d" id="select4" type="checkbox"><label for="select4">没有优惠券</label></li>
+						<li><input name="e" id="select5" type="checkbox"><label for="select5">担心安全性</label></li>
+						<li><input name="f" id="select6" type="checkbox"><label for="select6">试试别家</label></li>
+					</ul>
+					<textarea name="moreInfo" placeholder="还有话说，请在此输入"></textarea>
+					<div class="btn-box"><a class="submit-btn">提交</a></div>
+				</div>
+			</div>
+		</div>
+		<!--提现处理中-->
+		<div class="withdraw-wait dn">
+			<div class="top-title">
+				<h3><i class="success"></i>您的提现申请正在提交中！</h3>
+				<p>提现详细信息请在提现记录中查看</p>
+			</div>
+			<div class="balanceInfo">
+				<ul>
+					<li class="clear">
+						<p class="fl">提现金额：</p><span class="num1 fr">￥<i class="js-operate">0</i></span></li>
+					<li class="clear">
+						<p class="fl">当前可用余额：</p><span class="fr">￥<i class="js-canuse">0</i></span></li>
+				</ul>
+			</div>
+			<div class="skipLink clear">
+				<a class="fl" href="/home/index">返回账户中心</a><a class="fr" href="/home/recharge#withdraw_record">查看提现记录</a>
+			</div>
+			<p class="desc-under">如有疑问，可联系大麦理财官方热线：400-0822-122。服务时间：08:30-18:30</p>
+		</div>
+		<!--提现失败-->
+		<div class="withdraw-error dn">
+			<div class="top-title">
+				<h3><i class="error"></i>提现失败!</h3>
+				<div class="text-error">
+					<p>请检查是否因以下情况导致您提现失败：</p>
+					<p>1、交易密码输入错误，导致提现失败</p>
+					<p>2、账户被冻结，导致您操作失败</p>
+				</div>
+				<p class="desc-error">提现过程中如果输入交易密码连续错误3次，会导致账户被冻结</p>
+				<p class="desc-error">账户冻结后不能进行充值、投资、提现等操作，次日00:00解冻</p>
+			</div>
+			<div class="skipLink clear">
+				<a class="fl" href="/home/index">返回账户中心</a><a class="fr" href="/home/recharge#withdraw_record">查看提现记录</a>
+			</div>
+			<p class="desc-under">如有疑问，可联系大麦理财官方热线：400-0822-122。服务时间：08:30-18:30</p>
+		</div>
+		<!-- 提现结果 end-->
+
+		<!--充值操作-->
+		<div class="recharge-success dn">
+			<div class="top-title">
+				<h3><i></i>充值成功!</h3>
+			</div>
+			<div class="balanceInfo">
+				<ul>
+					<li class="clear">
+						<p class="fl">本次充值金额：</p><span class="num1 fr">￥<i lass="js-operate">0</i></span></li>
+					<li class="clear">
+						<p class="fl">当前可用余额：</p><span class="fr">￥<i class="js-canuse">0</i></span></li>
+				</ul>
+			</div>
+			<div class="skipLink clear">
+				<a class="fl" href="/home/recharge#recharge">继续充值</a><a class="fr" href="/home/recharge#recharge_record">查看充值记录</a>
+			</div>
+			<div class="h30"></div>
+			<div class="account-part4 recommend-wrap">
+				<div class="tit clear">
+					<p class="fl">推荐项目</p>
+					<div class="fr right-box"><a class="underline" href="/product">查看更多&gt;</a></div>
+				</div>
+				<table>
+					<thead>
+						<tr>
+							<th width="30%">项目名称</th>
+							<th width="15%">项目总额</th>
+							<th width="15%">投资期限</th>
+							<th width="15%">历史年化利</th>
+							<th width="15%">还款方式</th>
+							<th width="10%">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if(count($borrow_recommend) > 0){
+							foreach($borrow_recommend as $item){
+					?>
+						<tr>
+							<td>
+								<a href="<?php echo Yii::$app->UrlManager->createUrl(['/product/investment', 'bid' => $item['bid']]);?>" class="overfonthide">
+									<?php if($item['borrow_name_type']<3){
+								echo $item['name'];}elseif($item['borrow_name_type']>=3){
+								echo $item['name']. '-' . $item['title'];
+							} ?>
+								</a>
+							</td>
+							<td>
+								<?php echo $item['account']/10000  ?>万元</td>
+							<td>
+								<?php echo $item['limit_time'] ?>个月</td>
+							<td>
+								<?php echo $item['apr']  ?>%</td>
+							<td>
+								<?php if($item['borrow_type'] == 2 && $item['type'] == 1 && $item['if_attorn'] == 2):?>到期付息
+								<?php else:?>按月付息
+								<?php endif;?>
+							</td>
+							<td><a href="<?php echo Yii::$app->UrlManager->createUrl(['/product/investment', 'bid' => $item['bid']]);?>" class="go-invest">投&nbsp;资</a></td>
+						</tr>
+						<?php }}else{ ?>
+						<tr>
+							<td style="text-align:center;" colspan="6">暂无推荐项目！</td>
+						</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!--充值审核中-->
+		<div class="recharge-wait dn">
+			<div class="top-title">
+				<h3><i class="success"></i>充值正在处理中！</h3>
+				<p>充值金额详细信息请在充值记录中查看</p>
+			</div>
+			<div class="balanceInfo">
+				<ul>
+					<li class="clear">
+						<p class="fl">本次充值金额：</p><span class="num1 fr">￥<i lass="js-operate">0</i></span></li>
+					<li class="clear">
+						<p class="fl">当前可用余额：</p><span class="fr">￥<i class="js-canuse">0</i></span></li>
+				</ul>
+			</div>
+			<div class="skipLink clear">
+				<a class="fl" href="/home/recharge#recharge">继续充值</a><a class="fr" href="/home/recharge#recharge_record">查看充值记录</a>
+			</div>
+			<p class="desc-under">如有疑问，可联系大麦理财官方热线：400-0822-122。服务时间：08:30-18:30</p>
+		</div>
+		<!--充值失败-->
+		<div class="recharge-error dn">
+			<div class="top-title">
+				<h3><i class="error"></i>充值失败!</h3>
+				<div class="text-error">
+					<p>请检查是否因以下情况导致您充值失败：</p>
+					<p>1、绑定银行卡余额不足，导致充值失败</p>
+					<p>2、信息输入错误，导致充值失败</p>
+				</div>
+				<p class="desc-error">您可以尝试使用其他充值方式再次充值</p>
+			</div>
+			<div class="skipLink clear">
+				<a class="fl" href="/home/index">返回账户中心</a><a class="fr" href="/home/recharge#withdraw_record">查看提现记录</a>
+			</div>
+			<p class="desc-under">如有疑问，可联系大麦理财官方热线：400-0822-122。服务时间：08:30-18:30</p>
+		</div>
+		<!--充值结束-->
+
+		<!--操作成功-->
+		<div class="operate-success dn">
+			<div class="top-title">
+				<h3><i></i>操作成功!</h3>
+			</div>
+			<div class="balanceInfo">
+				<ul>
+					<li class="clear">
+						<p class="fl">当前可用余额：</p><span class="fr">￥<i class="js-canuse">0</i></span></li>
+				</ul>
+			</div>
+			<div class="skipLink clear">
+				<a class="fl" href="/home/index">返回账户中心</a><a class="fr" href="/product">前往投资</a>
+			</div>
+		</div>
+		<!--操作审核中-->
+		<div class="operate-wait dn">
+			<div class="top-title">
+				<h3><i class="success"></i>操作正在处理中!</h3>
+			</div>
+			<div class="balanceInfo">
+				<ul>
+					<li class="clear">
+						<p class="fl">当前可用余额：</p><span class="fr">￥<i class="js-canuse">0</i></span></li>
+				</ul>
+			</div>
+			<div class="skipLink clear">
+				<a class="fl" href="/home/index">返回账户中心</a><a class="fr" href="/product">前往投资</a>
+			</div>
+			<p class="desc-under">如有疑问，可联系大麦理财官方热线：400-0822-122。服务时间：08:30-18:30</p>
+		</div>
+		<!--操作失败-->
+		<div class="operate-error dn">
+			<div class="top-title">
+				<h3><i class="error"></i>操作失败!</h3>
+				<div class="text-error">
+					<p>请检查是否因以下情况导致您操作失败：</p>
+					<p>1、信息输入错误，导致操作失败</p>
+				</div>
+			</div>
+			<div class="skipLink clear">
+				<a class="fl" href="/home/index">返回账户中心</a><a class="fr" href="/home/setting">返回账户设置</a>
+			</div>
+			<p class="desc-under">如有疑问，可联系大麦理财官方热线：400-0822-122。服务时间：08:30-18:30</p>
+		</div>
+		
+	</section>
+	<?php echo $this->render('@pc/views/layouts/footer.html', $info);?>
+	<input name="_csrf-dmlc" type="hidden" id="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
+	<script>
+		var judgeWord = "<?php echo $txCode;?>";
+		var status = "<?php echo $status;?>";  //1：订单处理中  2成功  4失败
+		var userMoney = "<?php if(!empty($userMoney)){echo $userMoney;}else{echo 0;}?>";
+		var txAmount = "<?php if(!empty($txAmount)){echo $txAmount;}else{echo 0;}?>";
+		if(status && location.href.indexOf("search") == -1){
+			$.dmWin({
+				cont:"操作查询中，<span class='js-time'>3</span>秒后自动刷新",
+				btnArr: ["前往我的账户"],
+				callback: function(index){
+					if(index == "closeBtn"){
+						location.href = location.href + "#search";   
+						location.reload();
+					}else{
+						window.location.href = "/home/index";
+					}
+				}
+			});
+			countdown()
+		}
+		$(".js-canuse").html(userMoney);  //可用余额
+		switch(judgeWord){
+			case "directRechargePlus": 
+				if(status == 2){ 
+					$(".recharge-success").show().find(".js-operate").html(txAmount); 
+				}else if(status == 4){
+					$(".recharge-error").show(); 
+				}else if(status == 1){
+					$(".recharge-wait").show().find(".js-operate").html(txAmount); 
+				};
+				break;
+			case "withdraw": 
+				if(status == 2){  
+					$(".withdraw-success").show().find(".js-operate").html(txAmount);
+				}else if(status == 4){
+					$(".withdraw-error").show();
+				}else if(status == 1){
+					$(".withdraw-wait").show().find(".js-operate").html(txAmount);
+				};
+				break;
+			default:   //当txCode=autoBidAuthPlus时 0成功 1失败 2成功
+				if(status == 1){  
+					$(".operate-success").show(); 
+				}else if(status == 2){
+					$(".operate-error").show();
+				}else if(status == 0){
+					$(".operate-wait").show(); 
+				};
+		}
+		
+		function countdown(){
+			var num = 3;
+			var interval = setInterval(function(){
+				num--;
+				$(".js-time").html(num);
+				if(num<1){
+					clearInterval(interval);
+					location.href = location.href + "#search";
+					location.reload();
+				}
+			},1000)
+		}
+	</script>
+</body>
+
+</html>

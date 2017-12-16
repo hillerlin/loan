@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<?php
+use yii\captcha\Captcha;
+?>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>大麦借款人--后台管理系统</title>
+    <link rel="stylesheet" type="text/css" href="/css/register-login.css">
+</head>
+<body>
+<div id="box"></div>
+<div class="cent-box">
+    <div class="cent-box-header">
+        <h1 class="main-title">大麦理财</h1>
+        <h2 class="sub-title">借款人管理系统</h2>
+    </div>
+
+    <div class="cont-main clearfix">
+        <form class="login form" action="/login/index" method="post">
+            <div class="group">
+                <div class="group-ipt email">
+                    <input type="text" name="username" id="email" class="ipt" placeholder="输入您的用户名或邮箱" required>
+                </div>
+                <div class="group-ipt password">
+                    <input type="password" name="password" id="password" class="ipt" placeholder="输入您的登录密码" required>
+                </div>
+            </div>
+            <div class=" verify">
+                <div id="embed-captcha"></div>
+                <input type="text" name="captcha" id="captcha"  style="width: 150px;font-family: 'Microsoft Yahei';padding: 1em .8em;background: rgba(255, 255, 255, 0.5);border: 1px solid #d5d5d5;" class="ipt" placeholder="输入您的验证码" required>
+                <?=Captcha::widget(['name'=>'captcha-img','captchaAction'=>'login/captcha','imageOptions'=>['id'=>'captcha-img', 'title'=>'换一个', 'style'=>'cursor:pointer;float:right'],'template'=>'{image}']);?>
+            </div>
+
+            <div class="button">
+                <button type="submit" class="login-btn register-btn button" id="embed-submit">登录</button>
+            </div>
+        </form>
+
+        <div class="remember clearfix">
+            <label class="forgot-password">
+                <a href="#">忘记密码？</a>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>© 2017 <a href="https://www.damailicai.com" target="_blank">大麦理财官网</a></p>
+</div>
+
+<script type="text/javascript" src="/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src='/js/particles.js'></script>
+<script type="text/javascript" src='/js/background.js'></script>
+<script type="text/javascript" src="/js/common/gt.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script>
+    $(function () {
+        changeVerifyCode();
+        //解决验证码不刷新的问题
+        $('#captcha-img').click(function () {
+            changeVerifyCode();
+        });
+    });
+    //更改或者重新加载验证码
+    function changeVerifyCode() {
+        //项目URL
+        $.ajax({
+            //使用ajax请求site/captcha方法，加上refresh参数，接口返回json数据
+            url: "/login/captcha?refresh",
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                //将验证码图片中的图片地址更换
+                $("#captcha-img").attr('src', data['url']);
+            }
+        });
+    }
+layui.use(['jquery', 'layer'], function () {
+//        var validate;
+//        //极验证
+//        layui.$.get("{:Url::build('Login/geetest')}?t=" + (new Date()).getTime(), function (data) {
+//            initGeetest({
+//                gt: data.gt,
+//                challenge: data.challenge,
+//                new_captcha: data.new_captcha,
+//                product: "popup",
+//                offline: !data.success
+//            }, handlerEmbed);
+//        }, "json");
+//        var handlerEmbed = function (captchaObj) {
+//            layui.$("#embed-submit").click(function (e) {
+//                validate = captchaObj.getValidate();
+//                if (!validate) {
+//                    layui.layer.msg('请先完成验证', {offset: 70, shift: 0});
+//                    e.preventDefault();
+//                }
+//            });
+//            captchaObj.appendTo("#embed-captcha");
+//            captchaObj.onReady(function () {
+//                layui.$("#wait").removeClass('show').addClass('hide');
+//            });
+//
+//            layui.$(document).ajaxStart(function () {
+//                loading = layui.layer.load(2);
+//                layui.$("#embed-submit").prop('disabled', true);
+//            }).ajaxStop(function () {
+//                layui.$("#embed-submit").prop('disabled', false);
+//                layui.layer.close(loading);
+//            });
+    
+    
+            layui.$('form').submit(function () {
+                var self = layui.$(this);
+                layui.$.post(self.attr("action"), self.serialize(), function (data) {
+                    if (data.statusCode ==0) {
+                        layui.layer.msg(data.message, {offset: 70, shift: 0});
+                        window.location.href = '/index';
+                        return false;
+                    }
+                    layui.layer.msg(data.message, {offset: 70, shift: 0});
+                    setTimeout(function () {
+                        window.location.href = '/login';
+                    }, 1000);
+                });
+                return false;
+            });
+    });
+</script>
+</body>
+</html>

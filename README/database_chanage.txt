@@ -1,0 +1,323 @@
+CREATE TABLE `xx_ndm_account` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `io_type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0 消费 1存入，资金进出标示',
+  `user_id` int(10) unsigned NOT NULL,
+  `money` decimal(20,2) NOT NULL DEFAULT '0.00' COMMENT '变动金额',
+  `type` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '0 红包 1 加息奖励 2 老资金余额转入 3 老资金还款 4线下红包加息资金补充打入 5 投资红包返现 6 提成 7 活动现金奖励',
+  `out_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '红包，奖励等对已tender_id',
+  `left_money` decimal(20,2) NOT NULL DEFAULT '0.00' COMMENT '资金剩余总额(大麦电子账户)',
+  `addtime` int(11) DEFAULT NULL COMMENT '添加时间',
+  `remark` varchar(128) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+
+
+##xx_user
+alter table xx_user modify card_status int(10) UNSIGNED default 0 COMMENT '银行存管开卡时间0未开卡，>0开卡时间';
+ALTER TABLE xx_user add set_pwd TINYINT(1)  UNSIGNED default 0 COMMENT '银行存管密码设置0未设置1已设置';
+ALTER TABLE xx_user ADD auto_bid TINYINT(1) UNSIGNED  NOT NULL DEFAULT 0 COMMENT '银行存管开启自动投标设置0未设置1已设置';
+ALTER TABLE xx_borrow ADD paid_period TINYINT(1) UNSIGNED  NOT NULL DEFAULT 0 COMMENT '已还期数';
+##xx_account
+alter TABLE xx_account add use_money_custody DECIMAL(11,2)  UNSIGNED default 0.00 COMMENT '银行存管可用余额';
+alter TABLE xx_account add freeze_money_bid DECIMAL(11,2)  UNSIGNED default 0.00 COMMENT '投资冻结';
+alter TABLE xx_account add base_total DECIMAL(11,2)  UNSIGNED default 0.00 COMMENT '存管后资金总额=use_money+use_money_custody+freeze_money_bid';
+##base_total资金总额是去掉待收利息的总额，需要上线以后进行计算
+##可以查看没有待收的总额应该是和可用资金是一样的
+##SELECT * from xx_account where total>0 and user_id not in (
+##select user_id from xx_borrow_collection where status=2 GROUP BY user_id ) 
+##查询出有待收本金的用户，待收本金金额
+##select a.user_id,total,use_money,SUM(repay_account) from xx_account as a
+##LEFT JOIN xx_borrow_collection as b on a.user_id=b.user_id
+##where b.status=2 group by user_id
+
+
+
+
+##自动投标签约数据表
+CREATE TABLE `xx_auto_bidauth` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `order_id` char(30) DEFAULT NULL COMMENT '自动投标订单id',
+  `tx_Amount` decimal(12,2) DEFAULT '1000000000.00' COMMENT '单笔投标金额的上限',
+  `to_tAmount` decimal(12,2) DEFAULT '1000000000.00' COMMENT '自动投标总金额上限（不算已还金额）',
+  `status` int(1) DEFAULT NULL COMMENT '回调状态：0：提交订单 1：订单通过',
+  `addtime` int(10) DEFAULT NULL COMMENT '添加时间',
+  `user_id` int(10) DEFAULT NULL COMMENT '用户ID',
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter table `xx_borrow` add column `debt_reg_status` int(4) UNSIGNED DEFAULT '0' NOT NULL COMMENT '0 不需要操作 1登记申请 2 登记完成 3登记撤销申请 4 登记撤销完成' after `intermediary_status`;
+
+alter TABLE xx_borrow_tender add auth_code CHAR(20) default '' COMMENT'银行返回的授权码';
+
+alter table `xx_account` add column `exper_money` decimal(11,2) DEFAULT '0.00' NULL COMMENT '体验金的钱' after `base_total`;
+
+alter table `xx_borrow_tender` add column `sys_status` int(4) UNSIGNED DEFAULT '0' NOT NULL COMMENT '用来和银行确认是否完成这笔放款和还款' after `auth_code`;
+alter table `xx_borrow_collection` add column `sys_status` int(4) UNSIGNED DEFAULT '0' NOT NULL COMMENT '同步银行处理状态' after `borrow_id`;
+alter table `xx_borrow` add column `batch_no` int(6) UNSIGNED DEFAULT '0' NOT NULL COMMENT '批次号' after `debt_reg_status`;
+alter table `xx_borrow_collection` add column `batch_no` int(6) UNSIGNED DEFAULT '0' NOT NULL COMMENT '批次号' after `sys_status`;
+alter table `xx_borrow_tender` add column `batch_no` int(6) UNSIGNED DEFAULT '0' NOT NULL COMMENT '批次号' after `sys_status`;
+alter table `xx_borrow` add column `lendpay_time` int UNSIGNED DEFAULT '0' NOT NULL COMMENT '放款时间' after `batch_no`;
+CREATE TABLE `xx_batch_records` (                                                                      
+                    `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',                                    
+                    `batch_no` int(6) unsigned NOT NULL DEFAULT '0' COMMENT '批次号',                                 
+                    `status` int(2) unsigned NOT NULL DEFAULT '0' COMMENT '1异常 2等待处理 3 已经处理完成',  
+                    `borrow_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '操作哪个项目,可以不填',         
+                    `txDate` char(8) CHARACTER SET latin1 NOT NULL COMMENT '发送日期YYYYMMDD',                       
+                    `txTime` char(8) DEFAULT NULL COMMENT '发送时间143056',                                          
+                    `seqNo` char(8) DEFAULT NULL COMMENT 'seqNo',                                                        
+                    `send_type` int(2) unsigned NOT NULL DEFAULT '0' COMMENT '1放款 2还款 3结束债权',            
+                    `txAmount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '此次提交的金额',                    
+                    `txCounts` int(4) unsigned NOT NULL DEFAULT '0' COMMENT '此次提交的笔数',                     
+                    `txCode` varchar(32) CHARACTER SET latin1 DEFAULT NULL COMMENT '此次提交的txCode',              
+                    `rtxDate` varchar(8) DEFAULT NULL COMMENT '处理成功的日期',                                   
+                    `addtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加日期',                              
+                    `remark` text COMMENT '报文',                                                                      
+                    `rremark` text COMMENT '得到的报文',
+                    `notify_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '回调时间',                                                              
+                    PRIMARY KEY (`id`)                                                                                   
+                  ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC ;
+
+##邮箱验证表
+CREATE TABLE `xx_email_verify` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL COMMENT '用户id',
+  `email` char(50) NOT NULL COMMENT '待激活的邮箱',
+  `verify_code` char(50) NOT NULL COMMENT '验证码',
+  `addtime` int(10) unsigned NOT NULL,
+  `endtime` int(10) unsigned NOT NULL COMMENT '过期时间',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0 未激活，1 已激活，2 已失效',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COMMENT='邮箱验证表';
+
+CREATE TABLE `xx_account_trans` (                                                              
+                    `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',                          
+                    `total` decimal(12,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '当时的总额',            
+                    `use_money` decimal(12,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '当时用户的可用',  
+                    `vertime` int(11) NOT NULL DEFAULT '0' COMMENT '处理时间',                               
+                    `addtime` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间',                               
+                    `status` int(2) DEFAULT '0' COMMENT '只有为2的时候才可以处理',                    
+                    PRIMARY KEY (`user_id`)                                                                      
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC  ;
+
+
+ALTER TABLE `xx_account_bank_app`
+ADD COLUMN `unbind_time`  int(11) UNSIGNED NULL DEFAULT 0 COMMENT '解绑时间' AFTER `bank_city`;
+#添加联行号字段
+ALTER TABLE `xx_account_bank_app` ADD COLUMN `cardnaps`  varchar(25) NOT NULL COMMENT '银行联行号' AFTER `unbind_time`;
+
+#新增建议反馈表
+CREATE TABLE `xx_suggest` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned zerofill NOT NULL DEFAULT '0000000000',
+  `content` varchar(255) NOT NULL,
+  `addtime` int(11) NOT NULL,
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 普通状态 2 标记状态 3 已处理',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#xx_borrow表中加入标的登记时间
+alter table xx_borrow add `debtregister_time` int(10) COMMENT'标的登记时间';
+
+#borrow表增加字段 是否是受托支付
+ALTER TABLE `xx_borrow`
+ADD COLUMN `is_entrusted`  tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否是受托支付（仅在个人借贷和车贷使用）' AFTER `debtregister_time`;
+
+#担保人表增加字段 用户id
+ALTER TABLE `xx_enter_users`
+ADD COLUMN `user_id`  int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '关联用户ID' AFTER `id`;
+
+#角色表
+CREATE TABLE `xx_admin_role` (
+  `role_id` smallint(6) NOT NULL,
+  `role_name` char(30) DEFAULT NULL,
+  `role_auth_ids` text,
+  PRIMARY KEY (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#审核相关表
+CREATE TABLE `xx_admin_pj_workflow` (
+  `wf_id` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `pj_id` mediumint(8) NOT NULL COMMENT '项目ID',
+  `pj_state` char(50) DEFAULT NULL COMMENT '项目状态(0:项目审核进行中 1:项目已结束)',
+  `pro_level_now` varchar(20) DEFAULT NULL COMMENT '审批级别',
+  `pro_times_now` int(3) DEFAULT NULL COMMENT '审批轮次',
+  `pro_members` char(50) DEFAULT NULL COMMENT '多人的模式：放主要审核人的id,与pro_auditors来做匹配，如果相同就改变状态',
+  `pro_auditors` char(50) DEFAULT NULL COMMENT '与pro_members做比较',
+  `pro_type` tinyint(1) DEFAULT '0' COMMENT '0:是垂直模式，1：是水平模式',
+  `pj_type` tinyint(1) DEFAULT '0' COMMENT '项目类型（0：国投的项目，1：OA的麦田项目，2：日常请假或其他）',
+  PRIMARY KEY (`wf_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=497 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `xx_admin_send_process` (
+  `sp_id` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `wf_id` mediumint(8) NOT NULL COMMENT '项目流程表ID',
+  `sp_author` int(4) NOT NULL COMMENT '送审人ID',
+  `sp_message` char(255) DEFAULT NULL COMMENT '送审消息',
+  `sp_remarks` char(255) DEFAULT NULL COMMENT '送审备注',
+  `sp_addtime` int(10) NOT NULL COMMENT '送审时间',
+  `sp_role_id` int(4) DEFAULT NULL COMMENT '送审人角色id',
+  PRIMARY KEY (`sp_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2462 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `xx_admin_sublevel_check` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `wf_id` char(6) NOT NULL COMMENT '子流程id号',
+  `admin_ids` varchar(100) DEFAULT NULL COMMENT '此流程默认的审核人的id号',
+  `pro_id` int(10) DEFAULT '0' COMMENT '项目ID(通用是：0 绑定项目id时该地方等于具体的id值 )',
+  PRIMARY KEY (`id`,`wf_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=128 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `xx_admin_workflow_log` (
+  `pl_id` int(10) NOT NULL AUTO_INCREMENT,
+  `sp_id` mediumint(8) NOT NULL COMMENT '送审ID',
+  `pj_id` mediumint(8) NOT NULL COMMENT '项目id',
+  `pro_author` int(3) NOT NULL DEFAULT '0' COMMENT '审批人ID',
+  `pro_level` varchar(20) NOT NULL COMMENT '审批级别',
+  `pro_times` int(3) NOT NULL COMMENT '审批轮次',
+  `pro_view` char(255) DEFAULT NULL COMMENT '审批意见',
+  `pro_state` char(50) NOT NULL COMMENT '审批状态【0:待审核 1：审核中 2：已审核 3：驳回】',
+  `pro_addtime` int(10) NOT NULL COMMENT '审批时间',
+  `wf_id` mediumint(8) NOT NULL COMMENT '项目流程ID',
+  `pro_role` mediumint(8) DEFAULT '0' COMMENT '审批人角色id',
+  `pro_xml_id` varchar(255) DEFAULT NULL COMMENT 'xml的文件对应的唯一id',
+  `pro_last_edit_time` int(10) DEFAULT NULL COMMENT '最后一次修改时间',
+  `pro_rebutter` int(3) DEFAULT '0' COMMENT '驳回者id',
+  `pro_rebutter_level` varchar(20) DEFAULT '0' COMMENT '第几级被驳回',
+  `pj_type` tinyint(4) DEFAULT '0' COMMENT '项目类型（0：国投的项目，1：OA的麦田项目，2：日常请假或其他）',
+  `pro_rebutter_plid` int(10) DEFAULT NULL COMMENT '驳回的plid',
+  PRIMARY KEY (`pl_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2601 DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `xx_borrow`
+ADD COLUMN `receipt_id`  int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '收款方id（对应enter_user表）' AFTER `is_entrusted`,
+ADD COLUMN `organize`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '合作机构（直融才会有，仅做标记用）' AFTER `receipt_id`,
+ADD COLUMN `is_payee_repayment`  tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '受托支付下是否是收款人还款（0 否， 1 是）' AFTER `organize`;
+
+ALTER table xx_admin_pj_workflow add COLUMN descs text COMMENT'审核留言';
+CREATE TABLE `xx_menu` (
+  `menu_id` smallint(6) NOT NULL AUTO_INCREMENT,
+  `menu_name` varchar(50) NOT NULL COMMENT '菜单名称',
+  `pid` smallint(6) NOT NULL COMMENT '父级id',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '类型 1:菜单 2:操作点',
+  `module_name` varchar(20) NOT NULL COMMENT '模块名',
+  `action_name` varchar(100) NOT NULL COMMENT '操作名',
+  `class_name` varchar(20) DEFAULT NULL COMMENT '图标样式名',
+  `data` varchar(120) NOT NULL COMMENT 'url参数',
+  `remark` varchar(255) NOT NULL COMMENT '备注',
+  `often` tinyint(1) NOT NULL DEFAULT '0',
+  `sort` tinyint(3) unsigned NOT NULL DEFAULT '255' COMMENT '排序',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态 0::禁用 1:启用',
+  PRIMARY KEY (`menu_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `xx_admin` (
+  `admin_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` tinyint(3) unsigned NOT NULL COMMENT '角色id',
+  `last_login_ip` varchar(15) NOT NULL DEFAULT '0.0.0.0' COMMENT '最后登录ip',
+  `admin_name` varchar(15) NOT NULL COMMENT '管理员登录账号',
+  `admin_password` varchar(32) NOT NULL COMMENT '管理员登录密码',
+  `real_name` varchar(32) NOT NULL DEFAULT '' COMMENT '姓名',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '账号状态',
+  `add_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
+  `last_login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登录时间',
+  `login_times` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
+  `is_supper` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否超级管理员',
+  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'user表id',
+  `email` varchar(32) NOT NULL DEFAULT '' COMMENT '邮箱',
+  `auth` text COMMENT '用户权限',
+  PRIMARY KEY (`admin_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员表';
+
+
+##更新数据库base_total为用户待收金额
+UPDATE `xx_account` AS a
+LEFT JOIN (select a.id,a.user_id,base_total,use_money,SUM(repay_account) as wait_money from xx_account as a
+LEFT JOIN xx_borrow_collection as b on a.user_id=b.user_id
+where b.status=2  group by user_id) AS b
+ON a.user_id=b.user_id SET a.base_total= IF(ISNULL(b.wait_money),0,b.wait_money) 
+where 
+a.user_id in(
+1035,
+13022,
+24748,
+31997,
+52006,
+71819,
+155308,
+159687,
+256553,
+261123,
+262182,
+265450,
+265513,
+271820,
+283551,
+284950,
+304424,
+305319,
+307269,
+309274,
+310711,
+313026,
+313761,
+314029);
+
+
+##先备份xx_account_bank_app
+delete from xx_account_bank_app where `status`=0 and user_id in (
+1035,
+13022,
+24748,
+31997,
+52006,
+71819,
+155308,
+159687,
+256553,
+261123,
+262182,
+265450,
+265513,
+271820,
+283551,
+284950,
+304424,
+305319,
+307269,
+309274,
+310711,
+313026,
+313761,
+314029);
+update xx_account_bank_app set `status`= 0 where status = 1 and user_id in (
+1035,
+13022,
+24748,
+31997,
+52006,
+71819,
+155308,
+159687,
+256553,
+261123,
+262182,
+265450,
+265513,
+271820,
+283551,
+284950,
+304424,
+305319,
+307269,
+309274,
+310711,
+313026,
+313761,
+314029);
+
+update xx_account set use_money_custody=783.15 where user_id=113943;
+
+update xx_account set use_money_custody=300.02 where user_id=304424;

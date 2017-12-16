@@ -1,0 +1,57 @@
+<?php
+use yii\helpers\Url;
+?>
+<title>银行存管协议</title>
+<?php echo $this->render('../layouts/borrowHeader.html');?>
+<body>
+	<div class="cont">
+		<div class="head">
+			<div class="head_bank"></div>
+			<h3>欢迎开通江西银行账户</h3>
+			<ul>
+				<li>
+					<p class="num">1</p>
+					<p>确定资料</p>
+					<span>&gt;</span>
+				</li>
+				<li>
+					<p class="num">2</p>
+					<p>设置交易密码</p>
+					<span>&gt;</span>
+				</li>
+				<li>
+					<p class="num">3</p>
+					<p>确认交易密码</p>
+				</li>
+			</ul>
+		</div>
+		<div class="content">
+			<p class="personal"><?=$type=='accountOpen'?'个人信息':'确认交易密码'?></p>
+			<div class="success">
+				<span class="trans_icon"></span>
+				<div>
+					<h3>错误码： <?= $retCode?></h3>
+					<p><?= $retMsg?></p>
+				</div>
+			</div>
+		</div>
+		<div class="foot">
+			<p class="pass"></p>
+			<?php if($type=='accountOpen'):?>
+			<a href='/index/index?token=<?php echo $token?>' class="next next_col">返回上一步</a>
+			<?php elseif($type=='trusteePay'):?>
+				<form action="/index/trustee-pay" method="post">
+					<input type="hidden" name="dmId" value="<?=$dmId?>">
+					<input type="hidden" name="orderId" value="<?=$orderId?>">
+					<input type="hidden" name="merchantId" value="<?=$merchantId?>">
+					<input type="hidden" name="retUrl" value="dmc" />
+					<input type="hidden" name="notifyUrl" value="dmc" />
+					<input type="submit" class="next" value="重新确认交易密码" />
+				</form>
+			<?php endif; ?>
+		</div>
+		
+	</div>	
+</body>
+<script src="/js/jquery.min.js"></script>
+</html>

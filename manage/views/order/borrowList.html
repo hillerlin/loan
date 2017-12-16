@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<?php echo $this->render('../layouts/commonHeader.html');?>
+<body>
+<form class="login form" action="/order/borrowjson" method="post">
+<div class="layui-form-item" style="padding:6px;">
+    <div class="layui-inline">
+        <label class="layui-form-mid">开始时间：</label>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="startTime" id="startTime" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-mid">结束时间：</label>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="endTime" id="endTime" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <select name="funcType" lay-verify="required" style="float:left;width: 120px;height: 38px;line-height: 1.3;border:1px #e6e6e6 solid;border-radius:2px;padding-left: 15px;margin-right: 20px;">
+        <option value="">--请选择--</option>
+        <option value="name">姓名</option>
+        <option value="card">身份证</option>
+        <option value="orderId">订单号</option>
+    </select>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="filter" autocomplete="off" class="layui-input" placeholder="请输入内容">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <button class="layui-btn" type="submit" function="query"><i class="layui-icon"></i>查询</button>
+        </div>
+    </div>
+</div>
+</form>
+<table class="layui-table" lay-data="{height: 'full', cellMinWidth: 80, url:'/order/borrowjson', page:true, id:'borrowerList'}" lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+        <th lay-data="{field:'order_id', width:80, sort: true, fixed: true,align:'center'}">订单号</th>
+        <th lay-data="{field:'real_name', width:100,align:'center'}">姓名</th>
+        <th lay-data="{field:'real_card', width:185,align:'center'}">身份证</th>
+        <th lay-data="{field:'formatTime', width:110,align:'center'}">借款时间</th>
+        <th lay-data="{field:'unit',align:'center',width:100,templet: '#unit'}">借款期限</th>
+        <th lay-data="{field:'repay_style', width:100,templet: '#repay_style',align:'center'}">还款方式</th>
+        <th lay-data="{field:'accountId', minWidth: 150,align:'center'}">收款账号</th>
+        <th lay-data="{field:'accountId', minWidth: 150,align:'center'}">还款账户</th>
+        <th lay-data="{field:'status', width:100 ,templet: '#status',align:'center'}">借款状态</th>
+        <th lay-data="{fixed: 'right', minWidth: 120, align:'center', toolbar: '#barDemo'}">操作</th>
+    </tr>
+    </thead>
+</table>
+<?php echo $this->render('../layouts/contentFoot.html');?>
+<script type="text/html" id="unit">
+    {{#
+         if(d.unit==1)
+         {
+            return d.duration+'月';
+         }else
+         {
+            return d.duration+'天';
+          }
+
+    }}
+</script>
+<script type="text/html" id="repay_style">
+    {{#
+    if(d.repay_style==1)
+    {
+    return '按月付息';
+    }else if(d.repay_style==2)
+    {
+    return '到期付息';
+    }else if(d.repay_style==3)
+    {
+     return '按季付息';
+    }else if(d.repay_style==4)
+    {
+    return '等额本息';
+    }
+
+    }}
+</script>
+<script type="text/html" id="status">
+    {{#
+    if(d.status==1)
+    {
+    return '待确认';
+    }else if(d.status==2)
+    {
+    return '募集中';
+    }else if(d.status==3)
+    {
+    return '还款中';
+    }else if(d.status==5)
+    {
+    return '订单已结束';
+    }else if(d.status==9)
+    {
+      return '已撤销';
+    }else if(d.status==0)
+    {
+     return '初始化';
+     }
+
+    }}
+</script>
+<script type="text/html" id="barDemo">
+    <!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+    <a class="layui-btn layui-btn-disabled layui-btn-xs" lay-event="edit">撤销</a>
+    <a class="layui-btn layui-btn-primary layui-btn-disabled layui-btn-xs" lay-event="detail">提前还款</a>
+<!--    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+</script>
+
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    //表单提交模块
+    layui.use(['jquery', 'layer','form'], function () {
+        layui.$('form').submit(function () {
+            var table = layui.table;//表格
+            var self = layui.$(this);
+            var weburl=self.attr("action");
+            var startTime=$('input[name=startTime]').val();
+            var endTime=$('input[name=endTime]').val();
+            var filter=$('input[name=filter]').val();
+            var funcType=$('select[name=funcType]').val();
+            table.reload('borrowerList', {
+                page: true,
+                method: 'post',
+                url:weburl,
+                where:{'startTime':startTime,'endTime':endTime,'funcType':funcType,'filter':filter},
+                response: {
+                     statusName: 'code' //数据状态的字段名称，默认：code
+                    ,statusCode: 0 //成功的状态码，默认：0
+                    ,msgName: 'msg' //状态信息的字段名称，默认：msg
+                    ,countType: "data.count" //数据总数的字段名称，默认：count
+                    ,dataType: "data.data" //数据列表的字段名称，默认：data
+                },
+                request: {
+                    pageName: 'page' //页码的参数名称，默认：page
+                    ,limitName: 'limit' //每页数据量的参数名，默认：limit
+                },
+                 limits: [10,30,90,150,300]
+                ,limit: 10 //默认采用60
+
+            });
+/*            layui.$.post(self.attr("action"), self.serialize(), function (data) {
+            });*/
+            return false;
+        });
+    });
+    //时间控件模块
+    layui.use('laydate',function () {
+        var laydate=layui.laydate;
+        //注册时间组件
+        laydate.render({
+            elem:'#startTime'
+        });
+        laydate.render({
+            elem:'#endTime'
+        })
+    });
+    //表单模块
+    layui.use('table', function(){
+        var table = layui.table;
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function(obj){
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(demo)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.order_id + ' 的查看操作');
+            } else if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                /*layer.alert('编辑行：<br>'+ JSON.stringify(data))*/
+                layer.open({
+                    type: 2,
+                    title: '新增',
+                    maxmin: true,
+                    shadeClose: true, //点击遮罩关闭层
+                    area : ['800px' , '520px'],
+                    content: '/order/response',
+                });
+            }
+        });
+
+        var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('borrowerList')
+                    ,data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('borrowerList')
+                    ,data = checkStatus.data;
+                layer.msg('选中了：'+ data.length + ' 个');
+            }
+            ,isAll: function(){ //验证是否全选
+                var checkStatus = table.checkStatus('borrowerList');
+                layer.msg(checkStatus.isAll ? '全选': '未全选')
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
+</body>
+</html>

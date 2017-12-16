@@ -1,0 +1,77 @@
+@charset "UTF-8";
+/*
+ * @authors Asing (you@example.org)
+ * @date    2015-06-08
+ * @version $Id: reset.css,v 1.0 2015/06/08 xiequnxing Exp $
+ */
+/*base*/
+*{font-size: .28rem;}
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,
+code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,
+fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,
+figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video
+{margin:0;padding:0;border:0;}
+html{font-family:"Microsoft Yahei";-webkit-tap-highlight-color: rgba(0, 0, 0, 0)}
+body{margin:0 auto !important;min-width:3.2rem;max-width:7.5rem;font-size:1.4rem;}
+table{margin:0;padding:0;border-collapse:collapse;}
+ol,ul,dl{list-style: none;}
+a{text-decoration:none;color:#333;}
+a:hover,a:focus{outline: none;}
+input{outline:none;box-sizing:border-box;-webkit-box-sizing:border-box;}
+.img-auto{display:block;width:100%;}
+/* 布局类 */
+.ct{text-align:center;}
+.rt{text-align:right;}
+.fl{float:left;}
+.fr{float:right;}
+.relative{position: relative;}
+.clear:after{display:block;content:'';clear:both;visibility: hidden;height: 0;}
+.dn{display:none;}
+.r45{transform:rotate(45deg);-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);
+	-o-transform:rotate(45deg);-ms-transform:rotate(45deg);}
+.fhide{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.vc{vertical-align:middle;}
+/* 字体 */
+b,.fb{font-weight:bold;}
+.f1{font-size:1.2rem;}
+.f2{font-size:1.4rem;}
+.f3{font-size:1.6rem;}
+.f4{font-size:1.8rem;}
+.f5{font-size:2rem;}
+.f6{font-size:2.2rem;}
+/* 颜色 */
+.orange{color:#f49800;}
+.fff,a.fff{color:#fff;}
+.f-006934{color:#006934;}
+/* 绿色 */
+.f-5ab8c4{color:#5ab8c4;}
+/* 蓝色 */
+.f-eda92a{color:#eda92a;}
+/* 橙色 */
+.f-231815,a.f-231815{color:#231815;}
+/* 黑色 */
+.red{color:#F00;}
+.b-123d4e{background-color:#123d4e;}
+/* 深蓝色 */
+.b-f49800{background:#f49800;}
+/* 橙色 */
+.b-f39700{background:#f39700;}
+.b-ea5414{background:#ea5414;}
+.b-b5b5b6{background:#b5b5b6;}
+/* 灰色 */
+.b-123d4e{background:#123d4e;}
+/* 藏蓝色 */
+.b-fff{background:#fff;}
+/*距离*/
+.bk5{height:5px;clear:both;}
+.bk10{height:10px;clear:both;}
+.bk15{height:15px;clear:both;}
+/* 顶栏 */
+.header_top{height: .91rem;}
+.header_top .header_title{width: 7.5rem;height: .9rem;text-align: center;background: #fff;border-bottom: 1px #e5e5e5 solid;position: fixed;z-index: 999;}
+.header_top .header_title .back{display: block;width: .36rem;height: .88rem;background: url(http://cdn1.damailicai.com/loan/img/back_icon.png) left center no-repeat;background-size: .16rem .26rem;position: absolute;top: 0;left: .3rem;z-index: 2;}
+.header_top .header_title span{display: block;color: #333;font-size: .34rem;line-height: .9rem;}
+.header_top .header_title .right_btn{color: #757575;font-size: .3rem;line-height: .9rem;position: absolute;top: 0;right: .3rem;z-index: 1000;}
+.header_top .header_title .right_btn.select{color: #ff9a26;}
+.header_top .header_title .right_btn.help{display: inline-block;width: .3rem;height: .3rem;line-height: .3rem;color: #ff9a26;text-align: center;border: 1px #ff9a26 solid;border-radius: 100%;top: .3rem;}
+.header_top .header_title .login-btn{color: #ff9a26; font-style: normal;}

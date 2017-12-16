@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<?php echo $this->render('../layouts/commonHeader.html');?>
+<style>
+    .row{  margin: 10px;  }
+    .row .wel-title{font-size: large; color: #1AA094}
+    .explain {  margin: 10px 0;  width: 80%; padding-right: 40px; }
+    .explain p {color: #23262E; line-height: 20px; padding: 10px}
+    .panel {  margin: 10px 20px 10px 0;  width: 20%;  }
+    .rowLeft{ margin: 10px 60px 10px 0;width: 60%; }
+    .rowRight{ margin: 10px 20px 10px 0;width: 20%; }
+</style>
+<body class="childrenBody">
+<div class="row col">
+    <blockquote class="layui-elem-quote explain">
+        <p><span class="wel-title"><?=$userInfo['companyName']?></span>，欢迎您！</p>
+        <p>电子账号：<span class="wel-title"><?=$userInfo['accountId']?></span></p>
+        <p>额度使用情况：<span class="wel-title"><?=($userInfo['merchant_used_credit']/10000).'万 / '.($userInfo['merchant_credit']/10000).'万'?></span></p>
+    </blockquote>
+</div>
+<div class="panel_box row">
+    <div class="panel col">
+        <a href="javascript:;" data-url="/order/borrowlist" data-title="借款信息" data-id="2">
+        <!--  <a href="/order/borrowlist"data-icon="&#xe62d;" data-title="借款信息">-->
+        <!--<a href="javascript:;" data-url="/">-->
+            <div class="panel_icon" style="background-color:#F7B824;">
+                <i class="layui-icon" data-icon="&#xe62d;">&#xe62d;</i>
+            </div>
+            <div class="panel_word waitNews">
+                <span><?=$userInfo['availBal']?round($userInfo['availBal'],2):'0.00'?></span>
+                <cite>账户余额</cite>
+            </div>
+        </a>
+    </div>
+    <div class="panel col">
+        <a href="javascript:;" data-url="/order/borrowcollectionlist">
+            <div class="panel_icon" style="background-color:#FF5722;">
+                <i class="layui-icon" data-icon="&#xe636;">&#xe636;</i>
+            </div>
+            <div class="panel_word newMessage">
+                <span><?=$todayRepay?round($todayRepay['total'],2):'0.00'?></span>
+                <cite>今日待还</cite>
+            </div>
+        </a>
+    </div>
+    <div class="panel col">
+        <a href="javascript:;" data-url="/borrower/index">
+            <div class="panel_icon" style="background-color:#009688;">
+                <i class="layui-icon" data-icon="&#xe613;">&#xe613;</i>
+            </div>
+            <div class="panel_word userAll">
+                <span><?=$borrowerCount?:0?></span>
+                <cite>用户总数</cite>
+            </div>
+        </a>
+    </div>
+    <div class="panel col">
+        <a href="javascript:;" data-url="/order/borrowlist">
+            <div class="panel_icon" style="background-color:#2F4056;">
+                <i class="layui-icon" data-icon="&#xe63c;">&#xe63c;</i>
+            </div>
+            <div class="panel_word imgAll">
+                <span><?=$orderCount['total']?></span>
+                <cite>订单总数</cite>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="sysNotice col rowLeft">
+        <blockquote class="layui-elem-quote title">近七日待还</blockquote>
+        <table class="layui-table">
+            <tr>
+                <th width="20%">日期</th>
+                <th width="15%">订单数量</th>
+                <th width="15%">本金</th>
+                <th width="15%">利息</th>
+                <th width="15%">居间费</th>
+                <th width="20%">总额</th>
+            </tr>
+            <tbody>
+            <?php if(count($recentRepay)>0):?>
+            <?php foreach($recentRepay as $repay):?>
+            <tr>
+                <td><?=$repay_date?></td>
+                <td><?=$borrow_count?></td>
+                <td><?=$account?></td>
+                <td><?=$interest?></td>
+                <td><?=$intermediary_fee?></td>
+                <td><?=$total?></td>
+            </tr>
+            <?php endforeach;?>
+            <?php else:?>
+            <tr>
+                <td></td>
+                <td>近</td>
+                <td>期</td>
+                <td>无</td>
+                <td>待</td>
+                <td>还</td>
+            </tr>
+            <?php endif;?>
+            </tbody>
+        </table>
+    </div>
+    <div class="sysNotice col rowRight">
+        <blockquote class="layui-elem-quote title">订单数量</blockquote>
+        <table class="layui-table">
+            <colgroup>
+                <col width="150">
+                <col>
+            </colgroup>
+            <tbody>
+            <?php foreach($orderCount['list'] as $key => $value):?>
+            <tr>
+                <td><?=\manage\models\LoanOrder::getStatusNameFromStatus($key)?></td>
+                <td><?=$value?> 笔</td>
+            </tr>
+            <?php endforeach;?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<?php echo $this->render('../layouts/contentFoot.html');?>
+</body>
+<script>
+    layui.use(['layer'], function() {
+        var layer = layui.layer;
+            $ = layui.jquery;
+        var tab = parent.tab;
+        $('a').off('click').on('click', function() {
+            var _that = $(this);
+            tab.tabAdd(_that);
+        });
+    });
+</script>
+</html>

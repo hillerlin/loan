@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="/css/borrow_detail.css" />
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="form">
+	<div>
+		<span class="type">姓名</span>
+		<input type="text" placeholder="请输入您的姓名" class="name" disabled="disabled" value="<?php echo $real_name?>"/>
+	</div>
+	<div>
+		<span class="type">身份证号</span>
+		<input type="text" placeholder="请输入您的姓名" class="name" disabled="disabled" value="<?php echo $real_card?>"/>
+	</div>
+	<div>
+		<span  class="type">学历</span>
+		<select  class="degree">
+			<option value="">请选择</option>
+			<option value="1">博士</option>
+            <option value="2">硕士</option>
+            <option value="3">本科</option>
+            <option value="4">专科</option>
+            <option value="5">高中</option>
+            <option value="5">初中</option>
+            <option value="7">小学及以下</option>
+		</select>
+	</div>
+	<div>
+		<span  class="type">婚姻状况</span>
+		<select class="marriage">
+			<option value="">请选择</option>
+			<option value="1">已婚</option>
+			<option value="2">未婚</option>
+			<option value="3">离异</option>
+		</select>
+	</div>
+	<div>
+		<span  class="type">现居住地</span>	
+		<input type="text" placeholder="请输入现居住地" class="address" />
+	</div>
+	<div>
+		<span class="type">车辆信息</span>
+		<input type="text" placeholder="请输入车辆信息" class="car" />
+	</div>
+	<div>
+		<span class="type">房产情况</span>
+		<select class="house">
+			<option value="">请选择</option>
+			<option value="1">有房</option>
+			<option value="2">无房</option>
+		</select>
+	</div>
+	<div>
+		<span class="type">年收入</span>
+		<input type="text" placeholder="请输入年收入(万)" class="money" />
+	</div>
+	<div>
+		<span class="type">所处行业</span>
+		<input type="text" placeholder="请输入所处行业" class="industry" />
+	</div>
+	<div>
+		<span class="type">公司性质</span>
+		<input type="text" placeholder="请输入公司性质" class="company" />
+	</div>
+	<div>
+		<span class="type">担任职务</span>
+		<input type="text" placeholder="请输入担任职务" class="job" />
+	</div>
+	<!--<div class="type_text">-->
+		<!--<span class="type textfield">文本域</span>-->
+		<!--<textarea class="text" ></textarea>-->
+	<!--</div>-->
+	<div class="prompt">
+	</div>
+	<div>
+		<button class="refer">立即提交</button>
+		<button class="reset">重置</button>
+	</div>
+</div>
+<input type="hidden" name="dmId" value="<?php echo $borrower_id?>" />
+<input type="hidden" name="merchantId" value="<?php echo $merchant_id?>" />
+<script src="/layui/layui.all.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script>
+	var flag=true;
+	//立即提交
+    $(".refer").on("click",function(){
+    	if(!flag){
+    		return false;
+    	}
+    	flag=false;
+    	//取ajax参数
+    	var dmId=$("input[name='dmId']").val();
+    	var merchantId=$("input[name='merchantId']").val();
+    	var name=$(".name").val();
+    	var degree=$(".degree").val();
+    	var marriage=$(".marriage").val();
+    	var address=$(".address").val();
+    	var car=$(".car").val();
+    	var house=$(".house").val();
+    	var money=$(".money").val();
+    	var industry=$(".industry").val();
+    	var company=$(".company").val();
+    	var job=$(".job").val();
+		var text=$(".text").val();
+		
+		if(!degree ||!marriage||!address||!car||!house||!money||!industry||!company||!job){
+			$(".prompt").text("*请完善您的信息");
+			return false;
+			flag=true;
+		}
+		
+    	$.ajax({
+	    	url:"/borrower/edit-detail",
+	    	type:"post",
+	    	data:{
+	    		'dmId':dmId,
+	    		'merchantId':merchantId,
+	    		'degree':degree,
+	    		'marriage':marriage,
+	    		'address':address,
+	    		'carNo':car,
+	    		'property':house,
+	    		'income':money,
+	    		'companyIndustry':industry,
+	    		'companyNature':company,
+	    		'companyPosition':job,
+	    	},
+	    	dataType:"JSON",
+	    	success:function(data){
+	    		flag=true;
+	    		if(data.statusCode==200){
+	    			location.reload();
+	    		}else{
+	    			layer.confirm("提示", {
+		    			content:data.message
+					  	,btn: ['知道了'] 
+					  	,yes:function(index, layero){
+					  		 layer.close(index); 
+					  	}
+		    		});
+	    		}
+	    		
+	    	},
+	    	error:function(){
+	    		flag=true;
+	    		layer.confirm("提示", {
+	    			content:"网络异常，请您稍后再试"
+				  	,btn: ['知道了'] 
+				  	,yes:function(index, layero){
+				  		 layer.close(index); 
+				  	}
+	    		});
+	    	}
+	    
+	    })
+    })
+    //重置
+    $(".reset").on("click",function(){
+    	$("input").val("");
+    	$("select").val("");
+    })
+	    
+</script>
+<script>
+	
+</script>
+</body>
+

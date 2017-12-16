@@ -1,0 +1,7 @@
+测试需要的p2p公私钥：
+damailicai_sit.crt       
+damailicai_sit.p12
+私钥密码为damailicai_sit@2016
+
+测试需要的服务端的公钥：
+fdep.crt

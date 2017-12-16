@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-btn-group">
+    <a class="layui-btn layui-btn-small layui-btn-normal"  id="test2"><i class="layui-icon"></i>增加</a>
+    <button class="layui-btn layui-btn-small layui-btn-warm ajax-post" url="" target-form="ids" id="refresh"><i class="layui-icon">ဂ</i>刷新</button>
+</div>
+<table class="layui-table" lay-data="{height: '700', cellMinWidth: 80, url:'/borrower/index', page:true, id:'idTest'}" lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+        <th lay-data="{field:'borrower_id', width:80}">用户ID</th>
+        <th lay-data="{field:'real_name', width:80}">姓名</th>
+        <th lay-data="{field:'real_card', width:185}">身份证</th>
+        <th lay-data="{field:'real_phone', width:150}">手机号</th>
+        <th lay-data="{field:'credit',align:'center',width:100}">额度</th>
+        <th lay-data="{field:'used_credit', width:100}">已使用额度</th>
+        <th lay-data="{field:'card_bid', minWidth: 150}">绑定银行卡号</th>
+        <th lay-data="{field:'accountId', minWidth: 150}">江西银行账号</th>
+        <!--<th lay-data="{field:'status', width:100 ,templet: '#status'}">借款状态</th>-->
+        <th lay-data="{fixed: 'right', minWidth: 50, align:'center', toolbar: '#barDemo'}">操作</th>
+    </tr>
+    </thead>
+</table>
+<script type="text/html" id="unit11">
+    {{#  if(d.user_id == 315705){return "启用"; } else {return "禁用";} }}
+</script>
+<script type="text/html" id="unit">
+    {{#
+    if(d.unit==1)
+    {
+    return d.duration+'月';
+    }else
+    {
+    return d.duration+'天';
+    }
+
+    }}
+</script>
+<script type="text/html" id="repay_style">
+    {{#
+    if(d.repay_style==1)
+    {
+    return '按月付息';
+    }else if(d.repay_style==2)
+    {
+    return '到期付息';
+    }else if(d.repay_style==3)
+    {
+    return '按季付息';
+    }else if(d.repay_style==4)
+    {
+    return '等额本息';
+    }
+
+    }}
+</script>
+<script type="text/html" id="status">
+    {{#
+    if(d.status==1)
+    {
+    return '待确认';
+    }else if(d.status==2)
+    {
+    return '募集中';
+    }else if(d.status==3)
+    {
+    return '还款中';
+    }else if(d.status==5)
+    {
+    return '订单已结束';
+    }else if(d.status==9)
+    {
+    return '已撤销';
+    }else if(d.status==0)
+    {
+    return '初始化';
+    }
+
+    }}
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <!--<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">发起借款</a>
+    <!--<a class="layui-btn layui-btn-xs" lay-event="top" topUrl="../complexDatagrid/edit.html" topWidth="700px" topHeight="450px" topTitle="编辑功能号信息" inputs="id:">编辑</a>-->
+</script>
+
+
+<script src="/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/jquery-1.12.4.min.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    $('#test2').on('click', function(){
+        layer.open({
+            type: 1,
+            title: '新增',
+            maxmin: true,
+            shadeClose: true, //点击遮罩关闭层
+            area : ['800px' , '520px'],
+//      content: '/borrower/add',
+            content: $('#add'),
+        });
+    });
+    $('#refresh').on('click', function(){
+        var table = layui.table;//表格
+        var self = layui.$(this);
+        var weburl=self.attr("action");
+        table.reload('idTest', {
+            page: true,
+            method: 'get',
+            url:weburl,
+//            where:{'startTime':startTime,'endTime':endTime,'funcType':funcType,'filter':filter},
+            response: {
+                statusName: 'code' //数据状态的字段名称，默认：code
+                ,statusCode: 0 //成功的状态码，默认：0
+                ,msgName: 'msg' //状态信息的字段名称，默认：msg
+                ,countType: "data.count" //数据总数的字段名称，默认：count
+                ,dataType: "data.data" //数据列表的字段名称，默认：data
+            },
+            request: {
+                pageName: 'page' //页码的参数名称，默认：page
+                ,limitName: 'limit' //每页数据量的参数名，默认：limit
+            },
+            limits: [10,30,90,150,300]
+            ,limit: 10 //默认采用60
+
+        });
+    });
+    layui.use('table', function(){
+        var table = layui.table;
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function(obj){
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(demo)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.open({
+                    type: 2,
+                    title: '发起借款',
+                    maxmin: true,
+                    shadeClose: true, //点击遮罩关闭层
+                    area : ['800px' , '520px'],
+                    content: '/borrower/loan?borrower_id=' + data.borrower_id,
+//                    content: $('#add'),
+                });
+            }
+        });
+
+        var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.msg('选中了：'+ data.length + ' 个');
+            }
+            ,isAll: function(){ //验证是否全选
+                var checkStatus = table.checkStatus('idTest');
+                layer.msg(checkStatus.isAll ? '全选': '未全选')
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
+<!--</body>-->
+<div id="add" style="display:none">
+    <form class="layui-form  layui-form-pane" action="/borrower/register">
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="realName" required  lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+            </div>
+            <!--<div class="layui-form-mid layui-word-aux"></div>-->
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">身份证</label>
+            <div class="layui-input-inline">
+                <input type="text" name="idNo" required lay-verify="required" placeholder="请输入身份证" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux"></div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">手机号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="mobile" required lay-verify="required" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">和银行卡绑定的手机号</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">银行卡号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="cardNo" required lay-verify="required" placeholder="银行卡号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">和银行卡绑定的手机号</div>
+        </div>
+        <input type="hidden" name="merchantId" required lay-verify="required" placeholder="请输入手机号" autocomplete="off" class="layui-input" value="<?php echo $merchant_id?>">
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        //Demo
+        layui.use('form', function () {
+            var form = layui.form;
+
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                debugger;
+                var self = layui.$(this);
+                layui.$.post(data.form.action, data.field, function (data) {
+                    if (data.statusCode ==0) {
+                        layui.layer.msg(data.message, {offset: 70, shift: 0});
+//                        window.location.href = '/index';
+                        return false;
+                    }
+                    layui.layer.msg(data.message, {offset: 70, shift: 0});
+                    setTimeout(function () {
+//                        window.location.href = '/login';
+                    }, 1000);
+                });
+                return false;
+            });
+        });
+    </script>
+</div>
+<!--</html>-->
