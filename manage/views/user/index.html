@@ -21,8 +21,6 @@
 <div class="panel_box row">
     <div class="panel col">
         <a href="javascript:;" data-url="/order/borrowlist" data-title="借款信息" data-id="2">
-        <!--  <a href="/order/borrowlist"data-icon="&#xe62d;" data-title="借款信息">-->
-        <!--<a href="javascript:;" data-url="/">-->
             <div class="panel_icon" style="background-color:#F7B824;">
                 <i class="layui-icon" data-icon="&#xe62d;">&#xe62d;</i>
             </div>
@@ -33,7 +31,8 @@
         </a>
     </div>
     <div class="panel col">
-        <a href="javascript:;" data-url="/order/borrowcollectionlist">
+        <a href="javascript:;" data-url="/order/borrowcollectionlist" data-title="今日待还" data-id="3">
+        <!--<a href="javascript:;" data-url="/order/borrowcollectionlist">-->
             <div class="panel_icon" style="background-color:#FF5722;">
                 <i class="layui-icon" data-icon="&#xe636;">&#xe636;</i>
             </div>
@@ -44,7 +43,8 @@
         </a>
     </div>
     <div class="panel col">
-        <a href="javascript:;" data-url="/borrower/index">
+        <a href="javascript:;" data-url="/borrower/index" data-title="用户总数" data-id="4">
+        <!--<a href="javascript:;" data-url="/borrower/index">-->
             <div class="panel_icon" style="background-color:#009688;">
                 <i class="layui-icon" data-icon="&#xe613;">&#xe613;</i>
             </div>
@@ -55,7 +55,8 @@
         </a>
     </div>
     <div class="panel col">
-        <a href="javascript:;" data-url="/order/borrowlist">
+        <a href="javascript:;" data-url="/order/borrowlist" data-title="订单总数" data-id="5">
+        <!--<a href="javascript:;" data-url="/order/borrowlist">-->
             <div class="panel_icon" style="background-color:#2F4056;">
                 <i class="layui-icon" data-icon="&#xe63c;">&#xe63c;</i>
             </div>
@@ -82,12 +83,12 @@
             <?php if(count($recentRepay)>0):?>
             <?php foreach($recentRepay as $repay):?>
             <tr>
-                <td><?=$repay_date?></td>
-                <td><?=$borrow_count?></td>
-                <td><?=$account?></td>
-                <td><?=$interest?></td>
-                <td><?=$intermediary_fee?></td>
-                <td><?=$total?></td>
+                <td><?=isset($repay_date)?$repay_date:''?></td>
+                <td><?=isset($borrow_count)?$borrow_count:''?></td>
+                <td><?=isset($account)?$account:''?></td>
+                <td><?=isset($interest)?$interest:''?></td>
+                <td><?=isset($intermediary_fee)?$intermediary_fee:''?></td>
+                <td><?=isset($total)?$total:''?></td>
             </tr>
             <?php endforeach;?>
             <?php else:?>
